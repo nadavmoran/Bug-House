@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
-from GUI.Constants import *
-from Pieces.ChessPieces import *
+from gui.constants import *
+from pieces.chess_pieces import *
 
 
 def set_board(start_pos):
