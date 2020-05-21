@@ -7,8 +7,8 @@ class Server(object):
     def __init__(self, server_port):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.setblocking(0)
-        self.server_adress = ('0.0.0.0', server_port)
-        self.server.bind(self.server_adress)
+        self.server_address = ('0.0.0.0', server_port)
+        self.server.bind(self.server_address)
         self.server.listen(5)
         self.inputs = [self.server]
 
@@ -20,12 +20,12 @@ class Server(object):
 
     def readable_loop(self, readable):
         for request in readable:
-                if request is self.server:
-                    self.accept_client()
-                else:
-                    data = request.recv(1024)
-                    if data:
-                        print (data)
+            if request is self.server:
+                self.accept_client()
+            else:
+                data = request.recv(1024)
+                if data:
+                    print(data)
 
     def listen(self):
         while self.inputs:
