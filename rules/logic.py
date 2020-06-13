@@ -1,7 +1,7 @@
 import chess
 
 
-def is_not_transplant_legal(board, move):
+def is_legal(board, move):
     try:
         board.push_san(move)
         return True
