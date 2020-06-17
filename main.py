@@ -6,7 +6,7 @@ from gui.pieces_images import *
 
 
 def main(color):
-    map=chess.Board()
+    map = chess.Board()
     '''player1 = socket.socket()
     player1.connect((server_ip, 4320))'''
     stop = False
