@@ -5,11 +5,13 @@ import socket
 class Server(object):
 
     def __init__(self, server_port):
+        self.counter = 0
+        self.players = {}
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.setblocking(0)
         self.server_address = ('0.0.0.0', server_port)
         self.server.bind(self.server_address)
-        self.server.listen(5)
+        self.server.listen(4)
         self.inputs = [self.server]
 
     def accept_client(self):
@@ -17,21 +19,31 @@ class Server(object):
         print(str(address) + ' connected')
         connection.setblocking(0)
         self.inputs.append(connection)
+        color = 'white' if self.counter % 2 == 0 else 'black'
+        self.counter += 1
+        connection.send(('you are ' + color).encode())
+        self.players[connection] = color
 
-    def readable_loop(self, readable):
-        for request in readable:
-            if request is self.server:
+    def readable_loop(self):
+        for client in self.readable:
+            if client is self.server:
                 self.accept_client()
             else:
-                data = request.recv(1024)
+                data = client.recv(1024)
                 if data:
-                    print(data)
+                    for i in self.players:
+                        if i != client:
+                            i.send(data)
 
     def listen(self):
         while self.inputs:
-            readable, _, exceptional = select.select(self.inputs, [], self.inputs)
-            self.readable_loop(readable)
-            for request in exceptional:
-                self.inputs.remove(request)
-                request.close()
-                print(request + " disconnected")
+            self.readable, _, exceptional = select.select(self.inputs, [], self.inputs)
+            self.readable_loop()
+            for client in exceptional:
+                self.inputs.remove(client)
+                client.close()
+                print(client + " disconnected")
+
+
+s = Server(4320)
+s.listen()
