@@ -10,7 +10,7 @@ def is_legal(board, row1, row2, col1, col2, piece='P', promotion=None):
         else:
             if piece == 'P':
                 move = chr(col1 + 97) + str(row1 + 1) + chr(col2 + 97) + str(row2 + 1)
-            elif piece == 'K' and abs(col2 - col1) > 1:
+            elif piece == 'K' and 3 > abs(col2 - col1) > 1 and row1 == row2 and 0 != col2 != 7:
                 move = 'O-O' if col2 > col1 else 'O-O-O'
             else:
                 move = piece + chr(col1 + 97) + str(row1 + 1) + chr(col2 + 97) + str(row2 + 1)
