@@ -150,8 +150,8 @@ def draw_castle(prev_pos, prev_color):
     pygame.draw.rect(game_display, prev_color,
                      [prev_pos[0] - corner_center_distance, prev_pos[1] - corner_center_distance, square_size,
                       square_size])
-    #pygame.draw.rect(game_display, black,
-     #                [start_pos[0] - corner_center_distance, start_pos[1] - corner_center_distance, 400, 400], 3)
+    pygame.draw.rect(game_display, black,
+                     [start_pos[0] - corner_center_distance, start_pos[1] - corner_center_distance, 400, 400], 3)
 
 def game(board, transplant_pieces, start_pos, transplant_start_pos, color):
     stop = False

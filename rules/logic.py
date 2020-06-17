@@ -31,3 +31,14 @@ def is_mate(board, color):
     if board.piece_type_at(list(squares)[0]) == 2:
         return True
     return False
+
+
+def is_transplant_legal(board,square,piece,color):
+    if not board.is_check():
+        board.set_piece_at(square,chess.Piece(piece,color))
+        return True
+    board.set_piece_at(square, chess.Piece(piece, color))
+    if board.is_check():
+        board.remove_piece_at(square)
+        return False
+    return True

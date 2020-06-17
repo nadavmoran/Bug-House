@@ -68,19 +68,19 @@ def main(color):
                                 if not map.turn:
                                     draw_castle([start_pos[0], start_pos[1] + (7 * square_size)],
                                                 square_castle_color)
-                                    board[7][0] = (
+                                    board[7][3] = (
                                         Rook(pygame.image.load('gui/pieces_images/' + rook_castle_color + 'rook.png'),
-                                             [tool.pos[0] + square_size, tool.pos[1]], tool.color))
-                                    game_display.blit(board[7][0].img, board[7][0].rect)
+                                             [tool.pos[0] - square_size, tool.pos[1]], tool.color))
+                                    game_display.blit(board[7][3].img, board[7][3].rect)
                                     board[7][0] = None
-                                '''else:
-                                    draw_castle([start_pos[0] + (7 * square_size), start_pos[1]],
+                                else:
+                                    draw_castle([start_pos[0], start_pos[1]],
                                                 square_castle_color)
-                                    board[0][5] = (
+                                    board[0][3] = (
                                         Rook(pygame.image.load('gui/pieces_images/' + rook_castle_color + 'rook.png'),
-                                             [tool.pos[0] + square_size, tool.pos[1]], tool.color))
-                                    game_display.blit(board[0][5].img, board[0][5].rect)
-                                    board[0][7] = None'''
+                                             [tool.pos[0] - square_size, tool.pos[1]], tool.color))
+                                    game_display.blit(board[0][3].img, board[0][3].rect)
+                                    board[0][7] = None
                                 moving = False
 
                         else:
@@ -117,6 +117,7 @@ def main(color):
                     if str(type(transplant_tool)) == "<class 'pieces.chess_pieces.Pawn'>" and (y == 0 or y == 7):
                         break
                     if x != None and y != None and piece == None:
+                        legal=is_transplant_legal(map,chess.square(y+1,x+1),)#להמשיך את הקוד מפה
                         current_color = set_color(x, y)
                         draw(prev_pos, white, current_color, x, y)
                         transplant_tool.set_piece([start_pos[0] + (x * square_size), start_pos[1] + (y * square_size)],
