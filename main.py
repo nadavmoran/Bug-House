@@ -117,7 +117,7 @@ def main(color):
                     if str(type(transplant_tool)) == "<class 'pieces.chess_pieces.Pawn'>" and (y == 0 or y == 7):
                         break
                     if x != None and y != None and piece == None:
-                        legal=is_transplant_legal(map,chess.square(y+1,x+1),)#להמשיך את הקוד מפה
+                        legal = is_transplant_legal(map,chess.square(y+1,x+1),)#להמשיך את הקוד מפה
                         current_color = set_color(x, y)
                         draw(prev_pos, white, current_color, x, y)
                         transplant_tool.set_piece([start_pos[0] + (x * square_size), start_pos[1] + (y * square_size)],
