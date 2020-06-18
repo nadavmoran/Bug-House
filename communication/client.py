@@ -1,5 +1,5 @@
-import json
 from constants import *
+import json
 
 
 def connect(pocket):
@@ -10,9 +10,9 @@ def connect(pocket):
 
 
 def send_move(pocket, move):
-    pocket.send(move.encode())
+    pocket.send(json.dumps(move).encode())
 
 
 def get_move(pocket):
     move = pocket.recv(1024)
-    return move.loads()
+    return json.loads(move)
