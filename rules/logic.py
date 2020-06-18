@@ -33,12 +33,26 @@ def is_mate(board, color):
     return False
 
 
-def is_transplant_legal(board,square,piece,color):
+def is_transplant_legal(board, square, piece, color):
+    if board.turn == color:
+        return False
+    if piece == 'P':
+        piece = 1
+    elif piece == 'N':
+        piece = 2
+    elif piece == 'B':
+        piece = 3
+    elif piece == 'R':
+        piece = 4
+    elif piece == 'Q':
+        piece = 5
     if not board.is_check():
-        board.set_piece_at(square,chess.Piece(piece,color))
+        board.set_piece_at(square, chess.Piece(piece, color))
+        board.push(chess.Move.null())
         return True
     board.set_piece_at(square, chess.Piece(piece, color))
     if board.is_check():
         board.remove_piece_at(square)
         return False
+    board.push(chess.Move.null())
     return True

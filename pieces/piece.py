@@ -10,3 +10,7 @@ class Piece:
         self.pos = pos
         self.rect.center = pos
         game_display.blit(self.img, self.rect)
+
+    def set_pos(self, pos):
+        self.pos = pos
+        self.rect.center = pos
