@@ -10,7 +10,7 @@ def connect(pocket):
 
 
 def send_move(pocket, move):
-    pocket.send(json.dumps(move))
+    pocket.send(move.encode())
 
 
 def get_move(pocket):

@@ -1,5 +1,6 @@
 import select
 import socket
+import json
 
 
 class Server(object):
@@ -7,6 +8,7 @@ class Server(object):
     def __init__(self, server_port):
         self.counter = 0
         self.players = {}
+        self.readable = []
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.setblocking(0)
         self.server_address = ('0.0.0.0', server_port)
@@ -24,6 +26,32 @@ class Server(object):
         connection.send(('you are ' + color).encode())
         self.players[connection] = color
 
+    def publish_move(self, move, client):
+        client_num = self.players[client]
+        for i in self.players:
+            if i != client:
+                message = move.copy()
+                if (client_num > 1 and self.players[i] > 1) or (client_num <= 1 and self.players[i] <= 1):
+                    message.append('main')
+                else:
+                    message.append('secondary')
+                i.send(json.dumps(message).encode())
+
+    def publish_transplant(self, transplant, client):
+        client_num = self.players[client]
+        for i in self.players:
+            if i != client:
+                message = transplant.copy()
+                if client_num % 2 == self.players[i] % 2:
+                    message.append('down')
+                else:
+                    message.append('up')
+                if (client_num > 1 and self.players[i] > 1) or (client_num <= 1 and self.players[i] <= 1):
+                    message.append('secondary')
+                else:
+                    message.append('main')
+                i.send(json.dumps(message).encode())
+
     def readable_loop(self):
         for client in self.readable:
             if client is self.server:
@@ -31,9 +59,11 @@ class Server(object):
             else:
                 data = client.recv(1024)
                 if data:
-                    for i in self.players:
-                        if i != client:
-                            i.send(data)
+                    data = json.loads(data)
+                    if data[0] == 'm':
+                        self.publish_move(data, client)
+                    else:
+                        self.publish_transplant(data, client)
 
     def listen(self):
         while self.inputs:
