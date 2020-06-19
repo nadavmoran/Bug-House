@@ -5,7 +5,7 @@ from communication.client import *
 import socket
 
 
-def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transplant_start_pos, transplant_start_pos2):
+def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transplant_start_pos, transplant_start_pos2,client):
 
     map = chess.Board()
     if color == black:
@@ -22,7 +22,10 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
     tool = None
     transplant_tool = None
     legal = False
+    enemy_move=[]
     while not stop:
+        enemy_move=get_move(client)
+        set_board_while_game(enemy_move[0], enemy_move[1])
         for event in pygame.event.get():
             if event.type == QUIT:
                 stop = True
@@ -68,6 +71,7 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                                             0]) // transplant_square_size] is not None:
                                         transplant_pos2[0] += transplant_square_size
                             board = set_board_while_game(str(map), True)
+                            send_move(client,[str(map)])
                         else:
                             pygame.draw.rect(game_display, black, tool.rect, 1)
                         moving=False

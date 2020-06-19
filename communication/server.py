@@ -32,9 +32,9 @@ class Server(object):
             if i != client:
                 message = move.copy()
                 if (client_num > 1 and self.players[i] > 1) or (client_num <= 1 and self.players[i] <= 1):
-                    message.append('main')
+                    message.append(True)
                 else:
-                    message.append('secondary')
+                    message.append(False)
                 i.send(json.dumps(message).encode())
 
     def publish_transplant(self, transplant, client):
