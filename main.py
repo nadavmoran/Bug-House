@@ -5,36 +5,38 @@ from communication.client import *
 import socket
 
 
-def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transplant_start_pos, transplant_start_pos2,client):
-
+def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transplant_start_pos, transplant_start_pos2,
+         client):
     map = chess.Board()
     if color == black:
-        map=map.transform(chess.flip_vertical)
+        map = map.transform(chess.flip_vertical)
     stop = False
     moving = False
     transplant_moving = False
     prev_pos = [0, 0]
     prev_pos_logic = [0, 0]
     transplant_pos = transplant_start_pos[:]
-    transplant_pos2=transplant_start_pos2[:]
+    transplant_pos2 = transplant_start_pos2[:]
     prev_color = None
     current_color = None
     tool = None
     transplant_tool = None
     legal = False
-    enemy_move=[]
+    enemy_move = []
     while not stop:
-        enemy_move=get_move(client)
+        enemy_move = get_move(client)
         set_board_while_game(enemy_move[0], enemy_move[1])
         for event in pygame.event.get():
             if event.type == QUIT:
                 stop = True
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
-                print(transplant_pos,transplant_pos2)
+                print(transplant_pos, transplant_pos2)
                 piece, x, y = get_square_under_mouse(board, start_pos[:])
                 transplant_piece, index = get_transplant_piece_under_mouse(transplant_pieces, transplant_start_pos[:])
-                transplant_piece2, index2 = get_transplant_piece_under_mouse(transplant_pieces2, transplant_start_pos2[:])
-                if not moving and not transplant_moving and piece != None and piece.rect.collidepoint(event.pos) and piece.color==color:
+                transplant_piece2, index2 = get_transplant_piece_under_mouse(transplant_pieces2,
+                                                                             transplant_start_pos2[:])
+                if not moving and not transplant_moving and piece != None and piece.rect.collidepoint(
+                        event.pos) and piece.color == color:
                     prev_color = set_color(x, y)
                     moving = True
                     prev_pos = [start_pos[0] + (x * square_size), start_pos[1] + (y * square_size)]
@@ -54,7 +56,8 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                                 if not map.turn:
                                     board[y][x].set_piece(transplant_pos, game_display)
                                     transplant_pieces[
-                                        (transplant_pos[0] - transplant_start_pos[0]) // transplant_square_size] = board[y][x]
+                                        (transplant_pos[0] - transplant_start_pos[0]) // transplant_square_size] = \
+                                    board[y][x]
                                     transplant_pos[0] += transplant_square_size
                                     while transplant_pieces[
                                         (transplant_pos[0] - transplant_start_pos[
@@ -64,17 +67,17 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                                     board[y][x].set_piece(transplant_pos2, game_display)
                                     transplant_pieces2[
                                         (transplant_pos2[0] - transplant_start_pos2[0]) // transplant_square_size] = \
-                                    board[y][x]
+                                        board[y][x]
                                     transplant_pos2[0] += transplant_square_size
                                     while transplant_pieces2[
                                         (transplant_pos2[0] - transplant_start_pos2[
                                             0]) // transplant_square_size] is not None:
                                         transplant_pos2[0] += transplant_square_size
                             board = set_board_while_game(str(map), True)
-                            send_move(client,[str(map)])
+                            send_move(client, [str(map)])
                         else:
                             pygame.draw.rect(game_display, black, tool.rect, 1)
-                        moving=False
+                        moving = False
                         '''if tool.__str__() == 'P' and (y == 7 or y == 0):
                             legal = is_legal(map, 7 - prev_pos_logic[1], 7 - y, prev_pos_logic[0], x, 'P', 'Q')
                             if legal == True:
@@ -150,13 +153,14 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                         moving = False'''
                 elif not transplant_moving and ((transplant_piece != None and transplant_piece.rect.collidepoint(
                         event.pos)) or (transplant_piece2 != None and transplant_piece2.rect.collidepoint(
-                        event.pos))) and transplant_piece2 is not None and transplant_piece2.color==color:
+                    event.pos))) and transplant_piece2 is not None and transplant_piece2.color == color:
                     if not map.turn and index is not None:
                         prev_pos = [transplant_start_pos[0] + (index * transplant_square_size), transplant_start_pos[1]]
                         transplant_tool = transplant_piece
                         pygame.draw.rect(game_display, blue, transplant_piece.rect, 1)
                     else:
-                        prev_pos = [transplant_start_pos2[0] + (index2 * transplant_square_size), transplant_start_pos2[1]]
+                        prev_pos = [transplant_start_pos2[0] + (index2 * transplant_square_size),
+                                    transplant_start_pos2[1]]
                         transplant_tool = transplant_piece2
                         pygame.draw.rect(game_display, blue, transplant_piece2.rect, 1)
                     transplant_moving = True
@@ -164,15 +168,18 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                     if str(type(transplant_tool)) == "<class 'pieces.chess_pieces.Pawn'>" and (y == 0 or y == 7):
                         break
                     if x != None and y != None and piece == None:
-                        transplant_color=True if map.turn else False
-                        legal = is_transplant_legal(map,chess.square(x,7-y),transplant_tool.__str__(),transplant_color)
+                        transplant_color = True if map.turn else False
+                        legal = is_transplant_legal(map, chess.square(x, 7 - y), transplant_tool.__str__(),
+                                                    transplant_color)
                         if legal:
                             current_color = set_color(x, y)
                             draw(prev_pos, white, current_color, x, y)
-                            board=set_board_while_game(str(map),True)
+                            board = set_board_while_game(str(map), True)
                             if map.turn:
-                                transplant_pieces[(prev_pos[0] - transplant_start_pos[0]) // transplant_square_size] = None
-                                print(transplant_pieces[(prev_pos[0] - transplant_start_pos[0]) // transplant_square_size])
+                                transplant_pieces[
+                                    (prev_pos[0] - transplant_start_pos[0]) // transplant_square_size] = None
+                                print(transplant_pieces[
+                                          (prev_pos[0] - transplant_start_pos[0]) // transplant_square_size])
                                 board[y][x] = transplant_tool
                                 transplant_pos[0] = find_first_none(transplant_pieces) * transplant_square_size + \
                                                     transplant_start_pos[0]
@@ -181,7 +188,7 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                                     (prev_pos[0] - transplant_start_pos2[0]) // transplant_square_size] = None
                                 board[y][x] = transplant_tool
                                 transplant_pos2[0] = find_first_none(transplant_pieces2) * transplant_square_size + \
-                                                    transplant_start_pos2[0]
+                                                     transplant_start_pos2[0]
                     elif transplant_piece == transplant_tool:
                         pygame.draw.rect(game_display, white, transplant_piece.rect, 1)
                     elif transplant_piece2 == transplant_tool:
@@ -207,5 +214,6 @@ color = connect(client)
 side = color == 'w'
 board = set_all_tools(board, start_pos[:], side)
 board2 = set_all_tools(board2, start_pos2[:], not side)
-main(white if side else black, board,transplant_pieces,transplant_pieces3,start_pos,transplant_start_pos,transplant_start_pos3)
+main(white if side else black, board, transplant_pieces, transplant_pieces3, start_pos, transplant_start_pos,
+     transplant_start_pos3)
 pygame.quit()

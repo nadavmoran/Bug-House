@@ -35,14 +35,14 @@ def set_two_boards(start_pos, start_pos2):
     transplant_pieces2 = []
     for i in range(16):
         transplant_pieces2.append(None)
-    transplant_pieces3=[]
+    transplant_pieces3 = []
     for i in range(16):
         transplant_pieces3.append(None)
     transplant_pieces4 = []
     for i in range(16):
         transplant_pieces4.append(None)
     pygame.draw.line(game_display, black, (w // 2, 0), (w // 2, h), 5)
-    return board, transplant_pieces, board2, transplant_pieces2,transplant_pieces3,transplant_pieces4
+    return board, transplant_pieces, board2, transplant_pieces2, transplant_pieces3, transplant_pieces4
 
 
 def set_tools_in_board(board, start_pos):
@@ -110,7 +110,7 @@ def set_all_tools(board, start_pos, is_left_board):
 
 def get_square_under_mouse(board, start_pos):
     mouse_pos = pygame.Vector2(pygame.mouse.get_pos()) - (
-    start_pos[0] - corner_center_distance, start_pos[1] - corner_center_distance)
+        start_pos[0] - corner_center_distance, start_pos[1] - corner_center_distance)
     x, y = [(int(i // square_size)) for i in mouse_pos]
     if x is not None and y is not None:
         if 0 <= x <= 7 and 0 <= y <= 7:
@@ -120,7 +120,7 @@ def get_square_under_mouse(board, start_pos):
 
 def get_transplant_piece_under_mouse(transplant_pieces, transplant_start_pos):
     mouse_pos = pygame.Vector2(pygame.mouse.get_pos()) - (
-    transplant_start_pos[0] - corner_center_distance, transplant_start_pos[1] - corner_center_distance)
+        transplant_start_pos[0] - corner_center_distance, transplant_start_pos[1] - corner_center_distance)
     x, y = [(int(i // transplant_square_size)) for i in mouse_pos]
     if x is not None and y is not None:
         if 0 <= x <= 15 and y == 0:
@@ -168,10 +168,12 @@ def set_board_while_game_tmp(board, map, start_pos):
             row += 1
         if tools[piece] is not None:
             if piece.isupper():
-                board[row][col] = tools[piece](pygame.image.load('gui/pieces_images/w'+(tools[piece].__name__).lower()+'.png'), [0,0], white)
+                board[row][col] = tools[piece](
+                    pygame.image.load('gui/pieces_images/w' + (tools[piece].__name__).lower() + '.png'), [0, 0], white)
             else:
-                board[row][col] = tools[piece](pygame.image.load('gui/pieces_images/b'+(tools[piece].__name__).lower()+'.png'), [0,0], black)
-        #board[row][col] = tools[piece]
+                board[row][col] = tools[piece](
+                    pygame.image.load('gui/pieces_images/b' + (tools[piece].__name__).lower() + '.png'), [0, 0], black)
+        # board[row][col] = tools[piece]
         if board[row][col] is not None:
             board[row][col].set_piece([start_pos[0] + col * square_size, start_pos[1] + row * square_size],
                                       game_display)
@@ -181,12 +183,12 @@ def set_board_while_game_tmp(board, map, start_pos):
 def set_board_while_game(map, left):
     if left:
         board = set_board((start_pos[0] - corner_center_distance,
-                                              start_pos[1] - corner_center_distance))
+                           start_pos[1] - corner_center_distance))
         set_board_while_game_tmp(board, map, start_pos)
         return board
     else:
         board2 = set_board((start_pos2[0] - corner_center_distance,
-                                                start_pos2[1] - corner_center_distance))
+                            start_pos2[1] - corner_center_distance))
         set_board_while_game_tmp(board2, map, start_pos2)
         return board2
 
@@ -199,13 +201,14 @@ start_pos = [int(w // 24) + corner_center_distance, int(h // 5) + corner_center_
 start_pos2 = [int(w // 1.5) + corner_center_distance, int(h // 5) + corner_center_distance]
 transplant_start_pos = [corner_center_distance, h // 7]
 transplant_start_pos2 = [w // 2 + 33, h // 7]
-transplant_start_pos3 = [corner_center_distance, start_pos[1]+square_size*8]
-transplant_start_pos4 = [w // 2 + 33, start_pos[1]+square_size*8]
+transplant_start_pos3 = [corner_center_distance, start_pos[1] + square_size * 8]
+transplant_start_pos4 = [w // 2 + 33, start_pos[1] + square_size * 8]
 game_display.fill(white)
-board, transplant_pieces, board2, transplant_pieces2,transplant_pieces3,transplant_pieces4 = set_two_boards((start_pos[0] - corner_center_distance,
-                                                                       start_pos[1] - corner_center_distance),
-                                                                      (start_pos2[0] - corner_center_distance,
-                                                                       start_pos2[1] - corner_center_distance))
+board, transplant_pieces, board2, transplant_pieces2, transplant_pieces3, transplant_pieces4 = set_two_boards(
+    (start_pos[0] - corner_center_distance,
+     start_pos[1] - corner_center_distance),
+    (start_pos2[0] - corner_center_distance,
+     start_pos2[1] - corner_center_distance))
 tools = {'R': Rook,
          'N': Knight,
          'B': Bishop,
