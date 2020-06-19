@@ -23,21 +23,24 @@ def set_board(start_pos):
         board.append([])
         for x in range(8):
             board[y].append(None)
-    transplant_pieces = []
-    for i in range(16):
-        transplant_pieces.append(None)
-    return board, transplant_pieces
+    return board
 
 
 def set_two_boards(start_pos, start_pos2):
-    board, transplant_pieces = set_board(start_pos)
-    board2, transplant_pieces2 = set_board(start_pos2)
+    board = set_board(start_pos)
+    board2 = set_board(start_pos2)
+    transplant_pieces = []
+    for i in range(16):
+        transplant_pieces.append(None)
+    transplant_pieces2 = []
+    for i in range(16):
+        transplant_pieces2.append(None)
     transplant_pieces3=[]
     for i in range(16):
-        transplant_pieces.append(None)
+        transplant_pieces3.append(None)
     transplant_pieces4 = []
     for i in range(16):
-        transplant_pieces.append(None)
+        transplant_pieces4.append(None)
     pygame.draw.line(game_display, black, (w // 2, 0), (w // 2, h), 5)
     return board, transplant_pieces, board2, transplant_pieces2,transplant_pieces3,transplant_pieces4
 
@@ -177,15 +180,15 @@ def set_board_while_game_tmp(board, map, start_pos):
 
 def set_board_while_game(map, left):
     if left:
-        board, transplant_pieces = set_board((start_pos[0] - corner_center_distance,
+        board = set_board((start_pos[0] - corner_center_distance,
                                               start_pos[1] - corner_center_distance))
         set_board_while_game_tmp(board, map, start_pos)
-        return board, transplant_pieces
+        return board
     else:
-        board2, transplant_pieces2 = set_board((start_pos2[0] - corner_center_distance,
+        board2 = set_board((start_pos2[0] - corner_center_distance,
                                                 start_pos2[1] - corner_center_distance))
         set_board_while_game_tmp(board2, map, start_pos2)
-        return board2, transplant_pieces2
+        return board2
 
 
 pygame.init()
@@ -196,7 +199,7 @@ start_pos = [int(w // 24) + corner_center_distance, int(h // 5) + corner_center_
 start_pos2 = [int(w // 1.5) + corner_center_distance, int(h // 5) + corner_center_distance]
 transplant_start_pos = [corner_center_distance, h // 7]
 transplant_start_pos2 = [w // 2 + 33, h // 7]
-transplant_start_pos3 = [corner_center_distance, h // 1.66]
+transplant_start_pos3 = [corner_center_distance, start_pos[1]+square_size*8]
 transplant_start_pos4 = [w // 2 + 33, h // 1.66]
 game_display.fill(white)
 board, transplant_pieces, board2, transplant_pieces2,transplant_pieces3,transplant_pieces4 = set_two_boards((start_pos[0] - corner_center_distance,

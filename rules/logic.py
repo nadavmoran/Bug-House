@@ -34,7 +34,7 @@ def is_mate(board, color):
 
 
 def is_transplant_legal(board, square, piece, color):
-    if board.turn == color:
+    if not board.turn == color:
         return False
     if piece == 'P':
         piece = 1
