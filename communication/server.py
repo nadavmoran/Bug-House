@@ -1,6 +1,7 @@
 import select
 import socket
 import json
+import chess
 
 
 class Server(object):
@@ -22,19 +23,24 @@ class Server(object):
         connection.setblocking(0)
         self.inputs.append(connection)
         color = 'white' if self.counter % 2 == 0 else 'black'
-        self.counter += 1
         connection.send(('you are ' + color).encode())
-        self.players[connection] = color
+        self.players[connection] = self.counter
+        self.counter += 1
 
     def publish_move(self, move, client):
         client_num = self.players[client]
+        print(move[0])
         for i in self.players:
             if i != client:
                 message = move.copy()
-                if (client_num > 1 and self.players[i] > 1) or (client_num <= 1 and self.players[i] <= 1):
+                player_num = self.players[i]
+                if (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
                     message.append(True)
                 else:
                     message.append(False)
+                if client_num % 2 == player_num % 2 or (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
+                    message[2] = chess.Board(message[2]).transform(chess.flip_horizontal).transform(chess.flip_vertical).fen()
+                    message[0] = message[0][::-1]
                 i.send(json.dumps(message).encode())
 
     def publish_transplant(self, transplant, client):
@@ -42,14 +48,15 @@ class Server(object):
         for i in self.players:
             if i != client:
                 message = transplant.copy()
-                if client_num % 2 == self.players[i] % 2:
+                player_num = self.players[i]
+                if client_num % 2 == player_num % 2:
                     message.append('down')
                 else:
                     message.append('up')
-                if (client_num > 1 and self.players[i] > 1) or (client_num <= 1 and self.players[i] <= 1):
-                    message.append('secondary')
+                if (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
+                    message.append(False)
                 else:
-                    message.append('main')
+                    message.append(True)
                 i.send(json.dumps(message).encode())
 
     def readable_loop(self):
@@ -60,9 +67,9 @@ class Server(object):
                 data = client.recv(1024)
                 if data:
                     data = json.loads(data)
-                    if data[0] == 'm':
+                    if data[1] == 'm':
                         self.publish_move(data, client)
-                    else:
+                    elif data[1] == 't':
                         self.publish_transplant(data, client)
 
     def listen(self):
@@ -75,5 +82,5 @@ class Server(object):
                 print(client + " disconnected")
 
 
-s = Server(4320)
+s = Server(4321)
 s.listen()
