@@ -4,6 +4,8 @@ from pieces.chess_pieces import *
 
 
 def is_legal(board, row1, row2, col1, col2, piece='P', promotion=None):
+    print(type(board))
+    print(promotion)
     try:
         if promotion is not None:
             move = chr(col1 + 97) + str(row1 + 1) + chr(col2 + 97) + str(row2 + 1) + '=' + promotion
@@ -14,6 +16,7 @@ def is_legal(board, row1, row2, col1, col2, piece='P', promotion=None):
                 move = 'O-O' if col2 > col1 else 'O-O-O'
             else:
                 move = piece + chr(col1 + 97) + str(row1 + 1) + chr(col2 + 97) + str(row2 + 1)
+        print(move)
         board.push_san(move)
         return True
     except:

@@ -6,5 +6,5 @@ square_size = 50
 transplant_square_size = 45
 corner_center_distance = 25
 server_ip = '192.168.1.112'
-server_port = 4320
+server_port = 4321
 

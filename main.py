@@ -9,7 +9,7 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
          client):
     map = chess.Board()
     if color == black:
-        map = map.transform(chess.flip_vertical)
+        map = map.transform(chess.flip_horizontal).transform(chess.flip_vertical)
     stop = False
     moving = False
     transplant_moving = False
@@ -25,12 +25,14 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
     enemy_move = []
     while not stop:
         enemy_move = get_move(client)
-        set_board_while_game(enemy_move[0], enemy_move[1])
+        if enemy_move:
+            set_board_while_game(enemy_move[0], enemy_move[len(enemy_move)-1])
+            map = chess.Board(enemy_move[2])
+            map.push(chess.Move.null())
         for event in pygame.event.get():
             if event.type == QUIT:
                 stop = True
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
-                print(transplant_pos, transplant_pos2)
                 piece, x, y = get_square_under_mouse(board, start_pos[:])
                 transplant_piece, index = get_transplant_piece_under_mouse(transplant_pieces, transplant_start_pos[:])
                 transplant_piece2, index2 = get_transplant_piece_under_mouse(transplant_pieces2,
@@ -51,6 +53,8 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                             legal = is_legal(map, 7 - prev_pos_logic[1], 7 - y, prev_pos_logic[0], x, 'K')
                         else:
                             legal = is_legal(map, 7 - prev_pos_logic[1], 7 - y, prev_pos_logic[0], x, tool.__str__())
+                        print(legal)
+                        print(map)
                         if legal:
                             if piece != None and tool != piece:
                                 if not map.turn:
@@ -74,7 +78,7 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                                             0]) // transplant_square_size] is not None:
                                         transplant_pos2[0] += transplant_square_size
                             board = set_board_while_game(str(map), True)
-                            send_move(client, [str(map)])
+                            send_move(client, [str(map), 'm', map.fen()])
                         else:
                             pygame.draw.rect(game_display, black, tool.rect, 1)
                         moving = False
@@ -178,8 +182,6 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                             if map.turn:
                                 transplant_pieces[
                                     (prev_pos[0] - transplant_start_pos[0]) // transplant_square_size] = None
-                                print(transplant_pieces[
-                                          (prev_pos[0] - transplant_start_pos[0]) // transplant_square_size])
                                 board[y][x] = transplant_tool
                                 transplant_pos[0] = find_first_none(transplant_pieces) * transplant_square_size + \
                                                     transplant_start_pos[0]
@@ -212,8 +214,10 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
 client = socket.socket()
 color = connect(client)
 side = color == 'w'
+
 board = set_all_tools(board, start_pos[:], side)
 board2 = set_all_tools(board2, start_pos2[:], not side)
+pygame.display.update()
 main(white if side else black, board, transplant_pieces, transplant_pieces3, start_pos, transplant_start_pos,
-     transplant_start_pos3)
+     transplant_start_pos3, client)
 pygame.quit()
