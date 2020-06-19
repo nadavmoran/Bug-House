@@ -206,21 +206,6 @@ board, transplant_pieces, board2, transplant_pieces2,transplant_pieces3,transpla
                                                                        start_pos[1] - corner_center_distance),
                                                                       (start_pos2[0] - corner_center_distance,
                                                                        start_pos2[1] - corner_center_distance))
-board = set_all_tools(board, start_pos[:], True)
-board2 = set_all_tools(board2, start_pos2[:], False)
-'''tools = {'R': Rook(pygame.image.load('gui/pieces_images/wrook.png'), [0, 0], white),
-         'N': Knight(pygame.image.load('gui/pieces_images/wknight.png'), [0, 0], white),
-         'B': Bishop(pygame.image.load('gui/pieces_images/wbishop.png'), [0, 0], white),
-         'Q': Queen(pygame.image.load('gui/pieces_images/wqueen.png'), [0, 0], white),
-         'K': King(pygame.image.load('gui/pieces_images/wking.png'), [0, 0], white),
-         'P': Pawn(pygame.image.load('gui/pieces_images/wpawn.png'), [0, 0], white),
-         'r': Rook(pygame.image.load('gui/pieces_images/brook.png'), [0, 0], black),
-         'n': Knight(pygame.image.load('gui/pieces_images/bknight.png'), [0, 0], black),
-         'b': Bishop(pygame.image.load('gui/pieces_images/bbishop.png'), [0, 0], black),
-         'q': Queen(pygame.image.load('gui/pieces_images/bqueen.png'), [0, 0], black),
-         'k': King(pygame.image.load('gui/pieces_images/bking.png'), [0, 0], black),
-         'p': Pawn(pygame.image.load('gui/pieces_images/bpawn.png'), [0, 0], black),
-         '.': None}'''
 tools = {'R': Rook,
          'N': Knight,
          'B': Bishop,

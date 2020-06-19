@@ -1,10 +1,15 @@
 from gui.gui_code import *
 from rules.logic import *
 from constants import *
+from communication.client import *
+import socket
 
 
 def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transplant_start_pos, transplant_start_pos2):
+
     map = chess.Board()
+    if color == black:
+        map=map.transform(chess.flip_vertical)
     stop = False
     moving = False
     transplant_moving = False
@@ -192,5 +197,11 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                 transplant_moving = False'''
         pygame.display.update()
 
-main(white,board,transplant_pieces,transplant_pieces3,start_pos,transplant_start_pos,transplant_start_pos3)
+
+client = socket.socket()
+color = connect(client)
+side = color == 'w'
+board = set_all_tools(board, start_pos[:], side)
+board2 = set_all_tools(board2, start_pos2[:], not side)
+main(white if side else black, board,transplant_pieces,transplant_pieces3,start_pos,transplant_start_pos,transplant_start_pos3)
 pygame.quit()
