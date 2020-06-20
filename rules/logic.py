@@ -1,4 +1,5 @@
 import chess
+import chess.variant
 from pieces.piece import *
 from pieces.chess_pieces import *
 

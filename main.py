@@ -9,6 +9,8 @@ from pygame.locals import *
 def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transplant_start_pos, transplant_start_pos2,
          client):
     map = chess.Board()
+    my_pocket = chess.variant.CrazyhousePocket()
+    other_pocket = chess.variant.CrazyhousePocket()
     if color == black:
         map = map.transform(chess.flip_horizontal).transform(chess.flip_vertical)
     stop = False
@@ -37,6 +39,8 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                 board = set_board_while_game(enemy_move[0], enemy_move[-1])
             else:
                 set_board_while_game(enemy_move[0], enemy_move[-1])
+            if type(enemy_move[3]) == str:
+                set_pocket_while_game(other_pocket, enemy_move[-1], enemy_move[-2], enemy_move[4])
         for event in pygame.event.get():
             if event.type == QUIT:
                 stop = True
@@ -65,7 +69,9 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                         print(map)
                         if legal:
                             if piece != None and tool != piece:
-                                if not map.turn:
+                                transplant_pieces = set_pocket_while_game(str(other_pocket), enemy_move[-1], enemy_move[-2], piece.color)
+                                send_move(client,[str(map), 'tc', map.fen(), str(other_pocket), piece.color])
+                                '''if not map.turn:
                                     board[y][x].set_piece(transplant_pos, game_display)
                                     transplant_pieces[
                                         (transplant_pos[0] - transplant_start_pos[0]) // transplant_square_size] = \
@@ -85,9 +91,9 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                                         (transplant_pos2[0] - transplant_start_pos2[
                                             0]) // transplant_square_size] is not None:
                                         transplant_pos2[0] += transplant_square_size
-                            #board = set_board_while_game(str(map), True)
-                            print_board(board)
-                            send_move(client, [str(map), 'm', map.fen()])
+                            #board = set_board_while_game(str(map), True)'''
+                            else:
+                                send_move(client, [str(map), 'm', map.fen()])
                         else:
                             pygame.draw.rect(game_display, black, tool.rect, 1)
                         moving = False
@@ -227,6 +233,6 @@ side = color == 'w'
 board = set_all_tools(board, start_pos[:], side)
 board2 = set_all_tools(board2, start_pos2[:], not side)
 pygame.display.update()
-main(white if side else black, board, transplant_pieces, transplant_pieces3, start_pos, transplant_start_pos,
+main(white if side else black, board, transplant_pieces4, transplant_pieces3, start_pos, transplant_start_pos4,
      transplant_start_pos3, client)
 pygame.quit()

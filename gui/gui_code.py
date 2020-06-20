@@ -191,6 +191,33 @@ def set_board_while_game(map, left):
                             start_pos2[1] - corner_center_distance))
         set_board_while_game_tmp(board2, map, start_pos2)
         return board2
+
+
+def set_pocket_while_game_tmp(pocket, transplant_pieces, transplant_start_pos, color):
+    index = 0
+    for piece in pocket:
+        if color == white:
+            transplant_pieces[index] = tools[piece.upper()](
+                pygame.image.load('gui/pieces_images/w' + (tools[piece.upper()].__name__).lower() + '.png'), [transplant_start_pos[0] + index * transplant_square_size, transplant_start_pos[1] + index * transplant_square_size], white)
+        else:
+            transplant_pieces[index] = tools[piece.upper()](
+                pygame.image.load('gui/pieces_images/b' + (tools[piece.upper()].__name__).lower() + '.png'), [transplant_start_pos[0] + index * transplant_square_size, transplant_start_pos[1] + index * transplant_square_size], black)
+
+
+def set_pocket_while_game(pocket, left, up, color):
+    if left and up:
+        set_pocket_while_game_tmp(pocket, transplant_pieces, transplant_start_pos, color)
+        return transplant_pieces
+    elif left and not up:
+        set_pocket_while_game_tmp(pocket, transplant_pieces3, transplant_start_pos3, color)
+        return transplant_pieces3
+    elif not left and up:
+        set_pocket_while_game_tmp(pocket, transplant_pieces2, transplant_start_pos2, color)
+        return transplant_pieces2
+    else:
+        set_pocket_while_game_tmp(pocket, transplant_pieces4, transplant_start_pos4, color)
+        return transplant_pieces4
+
 def print_board(board):
     for row in board:
         for piece in row:
