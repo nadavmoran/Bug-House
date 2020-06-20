@@ -7,7 +7,6 @@ def connect(socket):
     data = str(socket.recv(1024))
     socket.settimeout(0.01)
     color = data[10]
-    print(data)
     return color
 
 

@@ -191,7 +191,10 @@ def set_board_while_game(map, left):
                             start_pos2[1] - corner_center_distance))
         set_board_while_game_tmp(board2, map, start_pos2)
         return board2
-
+def print_board(board):
+    for row in board:
+        for piece in row:
+            print (piece,)
 
 pygame.init()
 game_display = pygame.display.set_mode((0, 0), pygame.RESIZABLE)

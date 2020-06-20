@@ -26,9 +26,8 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
     while not stop:
         enemy_move = get_move(client)
         if enemy_move:
-            set_board_while_game(enemy_move[0], enemy_move[len(enemy_move)-1])
             map = chess.Board(enemy_move[2])
-            map.push(chess.Move.null())
+            board = set_board_while_game(enemy_move[0], enemy_move[len(enemy_move)-1])
         for event in pygame.event.get():
             if event.type == QUIT:
                 stop = True
@@ -53,8 +52,6 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                             legal = is_legal(map, 7 - prev_pos_logic[1], 7 - y, prev_pos_logic[0], x, 'K')
                         else:
                             legal = is_legal(map, 7 - prev_pos_logic[1], 7 - y, prev_pos_logic[0], x, tool.__str__())
-                        print(legal)
-                        print(map)
                         if legal:
                             if piece != None and tool != piece:
                                 if not map.turn:
@@ -77,7 +74,8 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                                         (transplant_pos2[0] - transplant_start_pos2[
                                             0]) // transplant_square_size] is not None:
                                         transplant_pos2[0] += transplant_square_size
-                            board = set_board_while_game(str(map), True)
+                            #board = set_board_while_game(str(map), True)
+                            print_board(board)
                             send_move(client, [str(map), 'm', map.fen()])
                         else:
                             pygame.draw.rect(game_display, black, tool.rect, 1)
