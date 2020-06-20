@@ -5,8 +5,8 @@ from communication.client import *
 import socket
 
 
-def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transplant_start_pos, transplant_start_pos2,
-         client):
+def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transplant_start_pos,
+         transplant_start_pos2, client):
     map = chess.Board()
     if color == black:
         map = map.transform(chess.flip_horizontal).transform(chess.flip_vertical)
@@ -26,8 +26,11 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
     while not stop:
         enemy_move = get_move(client)
         if enemy_move:
-            map = chess.Board(enemy_move[2])
-            board = set_board_while_game(enemy_move[0], enemy_move[len(enemy_move)-1])
+            if enemy_move[-1]:
+                map = chess.Board(enemy_move[2])
+                board = set_board_while_game(enemy_move[0], enemy_move[-1])
+            else:
+                set_board_while_game(enemy_move[0], enemy_move[-1])
         for event in pygame.event.get():
             if event.type == QUIT:
                 stop = True
@@ -216,6 +219,6 @@ side = color == 'w'
 board = set_all_tools(board, start_pos[:], side)
 board2 = set_all_tools(board2, start_pos2[:], not side)
 pygame.display.update()
-main(white if side else black, board, transplant_pieces, transplant_pieces3, start_pos, transplant_start_pos,
-     transplant_start_pos3, client)
+main(white if side else black, board, transplant_pieces, transplant_pieces3, start_pos,
+     transplant_start_pos, transplant_start_pos3, client)
 pygame.quit()
