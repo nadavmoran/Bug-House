@@ -1,12 +1,13 @@
 from gui.gui_code import *
 from rules.logic import *
-from constants import *
 from communication.client import *
 import socket
+from pygame.locals import *
 
 
-def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transplant_start_pos,
-         transplant_start_pos2, client):
+
+def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transplant_start_pos, transplant_start_pos2,
+         client):
     map = chess.Board()
     if color == black:
         map = map.transform(chess.flip_horizontal).transform(chess.flip_vertical)
@@ -23,6 +24,11 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
     transplant_tool = None
     legal = False
     enemy_move = []
+    fix_row, fix_col = 0, 0
+    if color == white:
+        fix_row = 7
+    else:
+        fix_col = 7
     while not stop:
         enemy_move = get_move(client)
         if enemy_move:
@@ -50,11 +56,13 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                 elif moving:
                     if x != None and y != None:
                         if tool.__str__() == 'P' and (y == 7 or y == 0):
-                            legal = is_legal(map, 7 - prev_pos_logic[1], 7 - y, prev_pos_logic[0], x, 'P', 'Q')
+                            legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(7 - fix_row - prev_pos_logic[0]),abs(7 - fix_row - x), 'P', 'Q')
                         elif tool.__str__() == 'K' and abs(x - prev_pos_logic[0]) > 1:
-                            legal = is_legal(map, 7 - prev_pos_logic[1], 7 - y, prev_pos_logic[0], x, 'K')
+                            legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(7 - fix_row - prev_pos_logic[0]), abs(7 - fix_row - x), 'K')
                         else:
-                            legal = is_legal(map, 7 - prev_pos_logic[1], 7 - y, prev_pos_logic[0], x, tool.__str__())
+                            legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(7 - fix_row - prev_pos_logic[0]), abs(7 - fix_row - x), tool.__str__())
+                        print(legal)
+                        print(map)
                         if legal:
                             if piece != None and tool != piece:
                                 if not map.turn:
@@ -219,6 +227,6 @@ side = color == 'w'
 board = set_all_tools(board, start_pos[:], side)
 board2 = set_all_tools(board2, start_pos2[:], not side)
 pygame.display.update()
-main(white if side else black, board, transplant_pieces, transplant_pieces3, start_pos,
-     transplant_start_pos, transplant_start_pos3, client)
+main(white if side else black, board, transplant_pieces, transplant_pieces3, start_pos, transplant_start_pos,
+     transplant_start_pos3, client)
 pygame.quit()
