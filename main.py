@@ -33,15 +33,17 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
     while not stop:
         enemy_move = get_move(client)
         if enemy_move:
+            print(enemy_move[-2], enemy_move[-1])
             if enemy_move[board_side_index]:
                 map = chess.Board(enemy_move[board_fen_index])
                 board = set_board_while_game(enemy_move[string_board_index], enemy_move[board_side_index])
             else:
                 set_board_while_game(enemy_move[string_board_index], enemy_move[board_side_index])
-            if 't' in enemy_move:
-                pocket = chess.variant.CrazyhousePocket(enemy_move[pocket_index])
+            if 't' in enemy_move[move_type_index]:
+                if enemy_move[transplant_board_side_index] and not enemy_move[pocket_side_index]:
+                    pocket = chess.variant.CrazyhousePocket(enemy_move[pocket_index])
                 transplant_pieces = set_pocket_while_game(enemy_move[pocket_index],
-                                                          enemy_move[board_side_index], enemy_move[pocket_side_index],
+                                                          enemy_move[transplant_board_side_index], enemy_move[pocket_side_index],
                                                           enemy_move[taken_piece_color_index])
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -71,6 +73,9 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                         print(map)
                         if legal:
                             if piece != None and tool != piece:
+                                tmp = str(map) if color == white else str(map)[::-1]
+                                board = set_board_while_game(tmp, True)
+                                pocket.add(piece_letter_to_piece_type(piece.__str__()))
                                 send_move(client, [str(map), 'tc', map.fen(), str(pocket), piece.color])
                                 '''if not map.turn:
                                     board[y][x].set_piece(transplant_pos, game_display)

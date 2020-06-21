@@ -25,6 +25,10 @@ def set_board(start_pos):
             board[y].append(None)
     return board
 
+def set_pocket(start_pos):
+    for i in range(16):
+        pygame.draw.rect(game_display, white, [start_pos[0] + i * transplant_square_size - corner_center_distance, start_pos[1] - corner_center_distance, square_size, square_size])
+
 
 def set_two_boards(start_pos, start_pos2):
     board = set_board(start_pos)
@@ -194,17 +198,22 @@ def set_board_while_game(map, left):
 
 
 def set_pocket_while_game_tmp(pocket, transplant_pieces, transplant_start_pos, color):
+    set_pocket(transplant_start_pos)
     index = 0
     for piece in pocket:
-        if color == white:
+        if color == [255, 255, 255]:
             transplant_pieces[index] = tools[piece.upper()](
-                pygame.image.load('gui/pieces_images/w' + (tools[piece.upper()].__name__).lower() + '.png'), [transplant_start_pos[0] + index * transplant_square_size, transplant_start_pos[1] + index * transplant_square_size], white)
+                pygame.image.load('gui/pieces_images/w' + (tools[piece.upper()].__name__).lower() + '.png'), [0,0], white)
         else:
             transplant_pieces[index] = tools[piece.upper()](
-                pygame.image.load('gui/pieces_images/b' + (tools[piece.upper()].__name__).lower() + '.png'), [transplant_start_pos[0] + index * transplant_square_size, transplant_start_pos[1] + index * transplant_square_size], black)
+                pygame.image.load('gui/pieces_images/b' + (tools[piece.upper()].__name__).lower() + '.png'), [0,0], black)
+        if transplant_pieces[index] is not None:
+            transplant_pieces[index].set_piece([transplant_start_pos[0] + index * transplant_square_size, transplant_start_pos[1]], game_display)
+        index +=1
 
 
 def set_pocket_while_game(pocket, left, up, color):
+    print(pocket, left, up, color)
     if left and up:
         set_pocket_while_game_tmp(pocket, transplant_pieces, transplant_start_pos, color)
         return transplant_pieces
@@ -213,6 +222,7 @@ def set_pocket_while_game(pocket, left, up, color):
         return transplant_pieces3
     elif not left and up:
         set_pocket_while_game_tmp(pocket, transplant_pieces2, transplant_start_pos2, color)
+        print(transplant_pieces2)
         return transplant_pieces2
     else:
         set_pocket_while_game_tmp(pocket, transplant_pieces4, transplant_start_pos4, color)

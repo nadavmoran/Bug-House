@@ -1,12 +1,8 @@
 import chess
 import chess.variant
-from pieces.piece import *
-from pieces.chess_pieces import *
-
 
 def is_legal(board, row1, row2, col1, col2, piece='P', promotion=None):
-    print(type(board))
-    print(promotion)
+    print('the turn is '+str(board.turn))
     try:
         if promotion is not None:
             move = chr(col1 + 97) + str(row1 + 1) + chr(col2 + 97) + str(row2 + 1) + '=' + promotion
@@ -17,7 +13,6 @@ def is_legal(board, row1, row2, col1, col2, piece='P', promotion=None):
                 move = 'O-O' if col2 > col1 else 'O-O-O'
             else:
                 move = piece + chr(col1 + 97) + str(row1 + 1) + chr(col2 + 97) + str(row2 + 1)
-        print(move)
         board.push_san(move)
         return True
     except:
@@ -37,26 +32,32 @@ def is_mate(board, color):
     return False
 
 
-def is_transplant_legal(board, square, piece, color):
+def is_transplant_legal(board, pocket, square, piece, color):
     if not board.turn == color:
         return False
-    if piece == 'P':
-        piece = 1
-    elif piece == 'N':
-        piece = 2
-    elif piece == 'B':
-        piece = 3
-    elif piece == 'R':
-        piece = 4
-    elif piece == 'Q':
-        piece = 5
+    piece = piece_letter_to_piece_type(piece)
     if not board.is_check():
         board.set_piece_at(square, chess.Piece(piece, color))
+        pocket.remove(piece)
         board.push(chess.Move.null())
         return True
     board.set_piece_at(square, chess.Piece(piece, color))
     if board.is_check():
         board.remove_piece_at(square)
         return False
+    pocket.remove(piece)
     board.push(chess.Move.null())
     return True
+
+def piece_letter_to_piece_type(piece):
+    if piece == 'P':
+        return 1
+    elif piece == 'N':
+        return 2
+    elif piece == 'B':
+        return 3
+    elif piece == 'R':
+        return 4
+    elif piece == 'Q':
+        return 5
+    return 6
