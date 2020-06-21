@@ -7,4 +7,10 @@ transplant_square_size = 45
 corner_center_distance = 25
 server_ip = '127.0.0.1'
 server_port = 4321
-
+string_board_index = 0
+move_type_index = 1
+board_fen_index = 2
+pocket_index = 3
+taken_piece_color_index=4
+pocket_side_index = -2
+board_side_index = -1

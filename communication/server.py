@@ -49,14 +49,14 @@ class Server(object):
             if i != client:
                 message = transplant.copy()
                 player_num = self.players[i]
-                if client_num % 2 == player_num % 2:
-                    message.append('down')
-                else:
-                    message.append('up')
-                if (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
+                if client_num % 2 != player_num % 2 and ((client_num > 1 and player_num > 1) or (client_num <=1 and player_num <=1)):
                     message.append(False)
                 else:
                     message.append(True)
+                if (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
+                    message.append('c' not in message[1])
+                else:
+                    message.append('c' in message[1])
                 i.send(json.dumps(message).encode())
 
     def readable_loop(self):
