@@ -31,17 +31,17 @@ class Server(object):
         client_num = self.players[client]
         print(move[0])
         for i in self.players:
-            if i != client:
-                message = move.copy()
-                player_num = self.players[i]
-                if (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
-                    message.append(True)
-                else:
-                    message.append(False)
-                if client_num % 2 == player_num % 2 or (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
-                    message[2] = chess.Board(message[2]).transform(chess.flip_horizontal).transform(chess.flip_vertical).fen()
-                    message[0] = message[0][::-1]
-                i.send(json.dumps(message).encode())
+            #if i != client:
+            message = move.copy()
+            player_num = self.players[i]
+            if (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
+                message.append(True)
+            else:
+                message.append(False)
+            if (player_num % 2 == 1 and message[-1]) or (player_num % 2 == 0 and not message[-1]):
+                #message[2] = chess.Board(message[2]).transform(chess.flip_horizontal).transform(chess.flip_vertical).fen()
+                message[0] = message[0][::-1]
+            i.send(json.dumps(message).encode())
 
     def publish_transplant(self, transplant, client):
         client_num = self.players[client]
