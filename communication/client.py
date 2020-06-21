@@ -5,6 +5,7 @@ import json
 def connect(socket):
     socket.connect((server_ip, server_port))
     data = str(socket.recv(1024))
+    socket.recv(1024)
     socket.settimeout(0.01)
     color = data[10]
     return color

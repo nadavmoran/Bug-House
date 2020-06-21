@@ -86,9 +86,8 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                                             0]) // transplant_square_size] is not None:
                                         transplant_pos2[0] += transplant_square_size
 
-                            #tmp = str(map) if color == white else str(map)[::-1]
-                            #board = set_board_while_game(tmp, True)
-                            #print_board(str)
+                            tmp = str(map) if color == white else str(map)[::-1]
+                            board = set_board_while_game(tmp, True)
                             send_move(client, [str(map), 'm', map.fen()])
                         else:
                             pygame.draw.rect(game_display, black, tool.rect, 1)
@@ -224,7 +223,6 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
 client = socket.socket()
 color = connect(client)
 side = color == 'w'
-
 board = set_all_tools(board, start_pos[:], side)
 board2 = set_all_tools(board2, start_pos2[:], not side)
 pygame.display.update()
