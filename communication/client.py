@@ -12,7 +12,12 @@ def connect(socket):
 
 
 def send_move(socket, move):
-    socket.send(json.dumps(move).encode())
+    try:
+        socket.send(json.dumps(move).encode())
+    except:
+        socket.close()
+        return True
+    return False
 
 
 def get_move(socket):

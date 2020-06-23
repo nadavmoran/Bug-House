@@ -9,7 +9,7 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
     map = chess.Board()
     my_pocket = chess.variant.CrazyhousePocket()
     other_pocket = chess.variant.CrazyhousePocket()
-    if color == black:  
+    if color == black:
         map = map.transform(chess.flip_horizontal).transform(chess.flip_vertical)
     stop = False
     moving = False
@@ -38,6 +38,7 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
             else:
                 set_board_while_game(enemy_move[string_board_index], enemy_move[board_side_index])
             if 't' in enemy_move[move_type_index]:
+                print(enemy_move)
                 if enemy_move[transplant_board_side_index] and not enemy_move[pocket_side_index]:
                     my_pocket = chess.variant.CrazyhousePocket(enemy_move[pocket_index])
                     transplant_pieces = set_pocket_while_game(enemy_move[pocket_index],
@@ -79,7 +80,7 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
                                 tmp = str(map) if color == white else str(map)[::-1]
                                 board = set_board_while_game(tmp, True)
                                 other_pocket.add(piece_letter_to_piece_type(piece.__str__()))
-                                send_move(client, [str(map), 'tc', map.fen(), str(other_pocket), piece.color])
+                                stop = send_move(client, [str(map), 'tc', map.fen(), str(other_pocket), piece.color])
                                 '''if not map.turn:
                                     board[y][x].set_piece(transplant_pos, game_display)
                                     transplant_pieces[
@@ -103,7 +104,7 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
                             else:
                                 tmp = str(map) if color == white else str(map)[::-1]
                                 board = set_board_while_game(tmp, True)
-                                send_move(client, [str(map), 'm', map.fen()])
+                                stop = send_move(client, [str(map), 'm', map.fen()])
                         else:
                             pygame.draw.rect(game_display, black, tool.rect, 1)
                         moving = False
@@ -194,7 +195,7 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
                         if legal:
                             tmp = str(map) if color == white else str(map)[::-1]
                             board = set_board_while_game(tmp, True)
-                            send_move(client, [str(map), 't', map.fen(), str(my_pocket), transplant_tool.color])
+                            stop = send_move(client, [str(map), 't', map.fen(), str(my_pocket), transplant_tool.color])
                             '''current_color = set_color(x, y)
                             draw(prev_pos, white, current_color, x, y)
                             board = set_board_while_game(str(map), True)
