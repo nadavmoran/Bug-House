@@ -23,15 +23,15 @@ class Server(object):
         connection.setblocking(0)
         self.inputs.append(connection)
         color = 'white' if self.counter % 2 == 0 else 'black'
-        connection.send(('you are ' + color).encode())
         self.players[connection] = self.counter
+        self.send(connection, 'you are ' + color)
         self.counter += 1
         self.matched_start()
 
     def matched_start(self):
-        if self.counter == 2:
+        if self.counter == 4:
             for player in self.players:
-                player.send('game started'.encode())
+                self.send(player, 'game started')
 
     def publish_move(self, move, client):
         client_num = self.players[client]
@@ -46,7 +46,7 @@ class Server(object):
             if (player_num % 2 == 1 and message[-1]) or (player_num % 2 == 0 and not message[-1]):
                 # message[2] = chess.Board(message[2]).transform(chess.flip_horizontal).transform(chess.flip_vertical).fen()
                 message[0] = message[0][::-1]
-            i.send(json.dumps(message).encode())
+            self.send(i, json.dumps(message))
 
     def publish_capture(self, capture, client):
         client_num = self.players[client]
@@ -56,31 +56,34 @@ class Server(object):
                 player_num = self.players[i]
                 self.publish(i, message, client_num, player_num)
 
-    def publish_transplant(self, transplant, client):
+    def publish(self, transplant, client):
         client_num = self.players[client]
         for i in self.players:
             message = transplant.copy()
             player_num = self.players[i]
-            self.publish(i, message, client_num, player_num)
+            if client_num == player_num or player_num + client_num == 3:
+                message.append(False)
+            else:
+                message.append(True)
+            if (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
+                message.append('c' not in message[1])
+            else:
+                message.append('c' in message[1])
+            if (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
+                message.append(True)
+            else:
+                message.append(False)
+            if (player_num % 2 == 1 and message[-1]) or (player_num % 2 == 0 and not message[-1]):
+                message[0] = message[0][::-1]
+            print(client_num, player_num)
+            print(message[-2], message[-1])
+            self.send(i, json.dumps(message))
 
-    def publish(self, player, message, client_num, player_num):
-        if client_num == player_num or player_num + client_num == 3:
-            message.append(False)
-        else:
-            message.append(True)
-        if (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
-            message.append('c' not in message[1])
-        else:
-            message.append('c' in message[1])
-        if (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
-            message.append(True)
-        else:
-            message.append(False)
-        if (player_num % 2 == 1 and message[-1]) or (player_num % 2 == 0 and not message[-1]):
-            message[0] = message[0][::-1]
-        print(client_num, player_num)
-        print(message[-2], message[-1])
-        player.send(json.dumps(message).encode())
+    def send(self, client, data):
+        try:
+            client.send(data.encode())
+        except:
+            client.close()
 
     def readable_loop(self):
         for client in self.readable:
@@ -102,7 +105,7 @@ class Server(object):
                     # elif 'c' in data[1]:
                     #   self.publish_capture(data, client)5
                     else:
-                        self.publish_transplant(data, client)
+                        self.publish(data, client)
 
     def listen(self):
         while self.inputs:

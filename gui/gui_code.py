@@ -27,7 +27,7 @@ def set_board(start_pos):
 
 def set_pocket(start_pos):
     for i in range(15):
-        pygame.draw.rect(game_display, white, [start_pos[0] + i * transplant_square_size - corner_center_distance, start_pos[1] - corner_center_distance, transplant_square_size, transplant_square_size])
+        pygame.draw.rect(game_display, white, [start_pos[0] + i * transplant_square_size - corner_center_distance, start_pos[1] - corner_center_distance, square_size, square_size])
 
 
 def set_two_boards(start_pos, start_pos2):
@@ -199,6 +199,8 @@ def set_board_while_game(map, left):
 
 def set_pocket_while_game_tmp(pocket, transplant_pieces, transplant_start_pos, color):
     set_pocket(transplant_start_pos)
+    for i in transplant_pieces:
+        i = None
     index = 0
     for piece in pocket:
         if color == [255, 255, 255]:

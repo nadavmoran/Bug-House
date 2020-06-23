@@ -73,7 +73,6 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
                             legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(fix_col - prev_pos_logic[0]), abs(fix_col - x), 'K')
                         else:
                             legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(fix_col - prev_pos_logic[0]), abs(fix_col - x), tool.__str__())
-                        print(legal)
                         print(map)
                         if legal:
                             if piece != None and tool != piece:
@@ -192,6 +191,7 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
                         transplant_color = True if map.turn else False
                         legal = is_transplant_legal(map, my_pocket, chess.square(abs(fix_col - x), abs(fix_row - y)), transplant_tool.__str__(),
                                                     transplant_color)
+                        print(legal)
                         if legal:
                             tmp = str(map) if color == white else str(map)[::-1]
                             board = set_board_while_game(tmp, True)
