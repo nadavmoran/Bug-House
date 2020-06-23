@@ -100,7 +100,7 @@ class Server(object):
                     if data[1] == 'm':
                         self.publish_move(data, client)
                     # elif 'c' in data[1]:
-                    #   self.publish_capture(data, client)
+                    #   self.publish_capture(data, client)5
                     else:
                         self.publish_transplant(data, client)
 
