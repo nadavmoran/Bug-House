@@ -5,12 +5,11 @@ import socket
 from pygame.locals import *
 
 
-
-def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transplant_start_pos, transplant_start_pos2,
-         client):
+def main(color, board, transplant_pieces, start_pos, transplant_start_pos, client):
     map = chess.Board()
-    pocket = chess.variant.CrazyhousePocket()
-    if color == black:
+    my_pocket = chess.variant.CrazyhousePocket()
+    other_pocket = chess.variant.CrazyhousePocket()
+    if color == black:  
         map = map.transform(chess.flip_horizontal).transform(chess.flip_vertical)
     stop = False
     moving = False
@@ -33,7 +32,6 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
     while not stop:
         enemy_move = get_move(client)
         if enemy_move:
-            print(enemy_move[-2], enemy_move[-1])
             if enemy_move[board_side_index]:
                 map = chess.Board(enemy_move[board_fen_index])
                 board = set_board_while_game(enemy_move[string_board_index], enemy_move[board_side_index])
@@ -41,18 +39,23 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                 set_board_while_game(enemy_move[string_board_index], enemy_move[board_side_index])
             if 't' in enemy_move[move_type_index]:
                 if enemy_move[transplant_board_side_index] and not enemy_move[pocket_side_index]:
-                    pocket = chess.variant.CrazyhousePocket(enemy_move[pocket_index])
-                transplant_pieces = set_pocket_while_game(enemy_move[pocket_index],
-                                                          enemy_move[transplant_board_side_index], enemy_move[pocket_side_index],
-                                                          enemy_move[taken_piece_color_index])
+                    my_pocket = chess.variant.CrazyhousePocket(enemy_move[pocket_index])
+                    transplant_pieces = set_pocket_while_game(enemy_move[pocket_index],
+                                                              enemy_move[transplant_board_side_index],
+                                                              enemy_move[pocket_side_index],
+                                                              enemy_move[taken_piece_color_index])
+                elif not enemy_move[transplant_board_side_index] and not enemy_move[pocket_side_index]:
+                    other_pocket = chess.variant.CrazyhousePocket(enemy_move[pocket_index])
+                set_pocket_while_game(enemy_move[pocket_index],
+                                      enemy_move[transplant_board_side_index],
+                                      enemy_move[pocket_side_index],
+                                      enemy_move[taken_piece_color_index])
         for event in pygame.event.get():
             if event.type == QUIT:
                 stop = True
             elif event.type == MOUSEBUTTONDOWN and event.button == 1:
                 piece, x, y = get_square_under_mouse(board, start_pos[:])
                 transplant_piece, index = get_transplant_piece_under_mouse(transplant_pieces, transplant_start_pos[:])
-                transplant_piece2, index2 = get_transplant_piece_under_mouse(transplant_pieces2,
-                                                                             transplant_start_pos2[:])
                 if not moving and not transplant_moving and piece != None and piece.rect.collidepoint(
                         event.pos) and piece.color == color:
                     prev_color = set_color(x, y)
@@ -64,19 +67,19 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                 elif moving:
                     if x != None and y != None:
                         if tool.__str__() == 'P' and (y == 7 or y == 0):
-                            legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(7 - fix_row - prev_pos_logic[0]),abs(7 - fix_row - x), 'P', 'Q')
+                            legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(fix_col - prev_pos_logic[0]),abs(fix_col - x), 'P', 'Q')
                         elif tool.__str__() == 'K' and abs(x - prev_pos_logic[0]) > 1:
-                            legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(7 - fix_row - prev_pos_logic[0]), abs(7 - fix_row - x), 'K')
+                            legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(fix_col - prev_pos_logic[0]), abs(fix_col - x), 'K')
                         else:
-                            legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(7 - fix_row - prev_pos_logic[0]), abs(7 - fix_row - x), tool.__str__())
+                            legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(fix_col - prev_pos_logic[0]), abs(fix_col - x), tool.__str__())
                         print(legal)
                         print(map)
                         if legal:
                             if piece != None and tool != piece:
                                 tmp = str(map) if color == white else str(map)[::-1]
                                 board = set_board_while_game(tmp, True)
-                                pocket.add(piece_letter_to_piece_type(piece.__str__()))
-                                send_move(client, [str(map), 'tc', map.fen(), str(pocket), piece.color])
+                                other_pocket.add(piece_letter_to_piece_type(piece.__str__()))
+                                send_move(client, [str(map), 'tc', map.fen(), str(other_pocket), piece.color])
                                 '''if not map.turn:
                                     board[y][x].set_piece(transplant_pos, game_display)
                                     transplant_pieces[
@@ -176,9 +179,7 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                     else:
                         pygame.draw.rect(game_display, black, tool.rect, 1)
                         moving = False'''
-                elif not transplant_moving and ((transplant_piece != None and transplant_piece.rect.collidepoint(
-                        event.pos)) or (transplant_piece2 != None and transplant_piece2.rect.collidepoint(
-                    event.pos))) and transplant_piece2 is not None and transplant_piece2.color == color:
+                elif not transplant_moving and transplant_piece != None and transplant_piece.rect.collidepoint(event.pos):
                     prev_pos = [transplant_start_pos[0] + (index * transplant_square_size), transplant_start_pos[1]]
                     transplant_tool = transplant_piece
                     pygame.draw.rect(game_display, blue, transplant_piece.rect, 1)
@@ -188,12 +189,12 @@ def main(color, board, transplant_pieces, transplant_pieces2, start_pos, transpl
                         break
                     if x != None and y != None and piece == None:
                         transplant_color = True if map.turn else False
-                        legal = is_transplant_legal(map, chess.square(x, 7 - y), transplant_tool.__str__(),
+                        legal = is_transplant_legal(map, my_pocket, chess.square(abs(fix_col - x), abs(fix_row - y)), transplant_tool.__str__(),
                                                     transplant_color)
                         if legal:
                             tmp = str(map) if color == white else str(map)[::-1]
                             board = set_board_while_game(tmp, True)
-                            send_move(client, [str(map), 't', map.fen(), str(pocket), transplant_tool.color])
+                            send_move(client, [str(map), 't', map.fen(), str(my_pocket), transplant_tool.color])
                             '''current_color = set_color(x, y)
                             draw(prev_pos, white, current_color, x, y)
                             board = set_board_while_game(str(map), True)
@@ -233,7 +234,6 @@ side = color == 'w'
 board = set_all_tools(board, start_pos[:], side)
 board2 = set_all_tools(board2, start_pos2[:], not side)
 pygame.display.update()
-main(white if side else black, board, transplant_pieces3, transplant_pieces4, start_pos, transplant_start_pos3,
-     transplant_start_pos4, client)
+main(white if side else black, board, transplant_pieces3, start_pos, transplant_start_pos3, client)
 pygame.quit()
 client.close()

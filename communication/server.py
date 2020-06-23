@@ -92,7 +92,7 @@ class Server(object):
                 except:
                     data = None
                     self.inputs.remove(client)
-                    print(client + " disconected")
+                    #print(client + " disconected")
                     client.close()
                 if data:
                     data = json.loads(data)
