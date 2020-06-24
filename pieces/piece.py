@@ -1,3 +1,4 @@
+#Father class for a piece for the gui
 class Piece:
     def __init__(self, img, pos, color):
         self.pos = pos
@@ -7,12 +8,7 @@ class Piece:
         self.color = color
 
 
-    def set_piece(self, pos, game_display):
+    def set_piece(self, pos, game_display):#changes the position of a piece
         self.pos = pos
         self.rect.center = pos
         game_display.blit(self.img, self.rect)
-
-    def set_pos(self, pos):
-        self.pos = pos
-        self.rect.center = pos
-

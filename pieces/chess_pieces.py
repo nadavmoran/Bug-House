@@ -1,3 +1,4 @@
+#inherits classes of the piece class
 from pieces.piece import Piece
 
 

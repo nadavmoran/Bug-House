@@ -1,7 +1,7 @@
 import chess
 import chess.variant
 
-def is_legal(board, row1, row2, col1, col2, piece='P', promotion=None):
+def is_legal(board, row1, row2, col1, col2, piece='P', promotion=None):#checks if a move is legal
     print('the turn is '+str(board.turn))
     try:
         if promotion is not None:
@@ -19,7 +19,7 @@ def is_legal(board, row1, row2, col1, col2, piece='P', promotion=None):
         return False
 
 
-def is_mate(board, color):
+def is_mate(board, color):#checks if there is a checkmate
     if not board.is_checkmate():
         return False
     squares = board.checkers()
@@ -32,7 +32,7 @@ def is_mate(board, color):
     return False
 
 
-def is_transplant_legal(board, pocket, square, piece,):
+def is_transplant_legal(board, pocket, square, piece,):#checks if a transplant is legal
     piece = piece_letter_to_piece_type(piece)
     if not board.is_check():
         board.set_piece_at(square, chess.Piece(piece, board.turn))
@@ -47,7 +47,7 @@ def is_transplant_legal(board, pocket, square, piece,):
     board.push(chess.Move.null())
     return True
 
-def piece_letter_to_piece_type(piece):
+def piece_letter_to_piece_type(piece):#convert from piece letter to piece type
     if piece == 'P':
         return 1
     elif piece == 'N':

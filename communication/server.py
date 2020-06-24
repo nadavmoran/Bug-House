@@ -17,7 +17,7 @@ class Server(object):
         self.server.listen(4)
         self.inputs = [self.server]
 
-    def accept_client(self):
+    def accept_client(self):#accepts a client
         connection, address = self.server.accept()
         print(str(address) + ' connected')
         connection.setblocking(0)
@@ -28,15 +28,14 @@ class Server(object):
         self.counter += 1
         self.matched_start()
 
-    def matched_start(self):
+    def matched_start(self):#starts the game at the same moment for all the players
         if self.counter == 4:
             for player in self.players:
                 self.send(player, 'game started')
 
-    def publish_move(self, move, client):
+    def publish_move(self, move, client):#publishes a move for all the players
         client_num = self.players[client]
         for i in self.players:
-            # if i != client:
             message = move.copy()
             player_num = self.players[i]
             if (client_num > 1 and player_num > 1) or (client_num <= 1 and player_num <= 1):
@@ -44,19 +43,11 @@ class Server(object):
             else:
                 message.append(False)
             if (player_num % 2 == 1 and message[-1]) or (player_num % 2 == 0 and not message[-1]):
-                # message[2] = chess.Board(message[2]).transform(chess.flip_horizontal).transform(chess.flip_vertical).fen()
                 message[0] = message[0][::-1]
             self.send(i, json.dumps(message))
 
-    def publish_capture(self, capture, client):
-        client_num = self.players[client]
-        for i in self.players:
-            if i != client:
-                message = capture.copy()
-                player_num = self.players[i]
-                self.publish(i, message, client_num, player_num)
 
-    def publish(self, transplant, client):
+    def publish(self, transplant, client):#publishes a capture and a transplant
         client_num = self.players[client]
         for i in self.players:
             message = transplant.copy()
@@ -79,13 +70,15 @@ class Server(object):
             print(message[-2], message[-1])
             self.send(i, json.dumps(message))
 
-    def send(self, client, data):
+
+    def send(self, client, data):#sends data to the server
         try:
             client.send(data.encode())
         except:
             client.close()
 
-    def readable_loop(self):
+
+    def readable_loop(self):#runs on the readable list
         for client in self.readable:
             if client is self.server:
                 self.accept_client()
@@ -95,19 +88,17 @@ class Server(object):
                 except:
                     data = None
                     self.inputs.remove(client)
-                    #print(client + " disconected")
                     client.close()
                 if data:
                     data = json.loads(data)
                     print(data[0])
                     if data[1] == 'm':
                         self.publish_move(data, client)
-                    # elif 'c' in data[1]:
-                    #   self.publish_capture(data, client)5
                     else:
                         self.publish(data, client)
 
-    def listen(self):
+
+    def listen(self):#The main loop
         while self.inputs:
             self.readable, _, exceptional = select.select(self.inputs, [], self.inputs)
             self.readable_loop()

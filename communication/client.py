@@ -2,7 +2,7 @@ from constants import *
 import json
 
 
-def connect(socket):
+def connect(socket):#connects to the server
     socket.connect((server_ip, server_port))
     data = str(socket.recv(1024))
     socket.recv(1024)
@@ -11,7 +11,7 @@ def connect(socket):
     return color
 
 
-def send_move(socket, move):
+def send_move(socket, move):#sends a move to the server
     try:
         socket.send(json.dumps(move).encode())
     except:
@@ -20,7 +20,7 @@ def send_move(socket, move):
     return False
 
 
-def get_move(socket):
+def get_move(socket):#gets a move from the server
     try:
         move = socket.recv(1024)
     except:
