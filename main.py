@@ -31,25 +31,25 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
     while not stop:
         enemy_move = get_move(client)
         if enemy_move:
-            if enemy_move[board_side_index]:
-                map = chess.Board(enemy_move[board_fen_index])
-                board = set_board_while_game(enemy_move[string_board_index], enemy_move[board_side_index])
-            else:
-                set_board_while_game(enemy_move[string_board_index], enemy_move[board_side_index])
-            if 't' in enemy_move[move_type_index]:
-                print(enemy_move)
-                if enemy_move[transplant_board_side_index] and not enemy_move[pocket_side_index]:
-                    my_pocket = chess.variant.CrazyhousePocket(enemy_move[pocket_index])
-                    transplant_pieces = set_pocket_while_game(enemy_move[pocket_index],
-                                                              enemy_move[transplant_board_side_index],
-                                                              enemy_move[pocket_side_index],
-                                                              enemy_move[taken_piece_color_index])
-                elif not enemy_move[transplant_board_side_index] and not enemy_move[pocket_side_index]:
-                    other_pocket = chess.variant.CrazyhousePocket(enemy_move[pocket_index])
-                set_pocket_while_game(enemy_move[pocket_index],
-                                      enemy_move[transplant_board_side_index],
-                                      enemy_move[pocket_side_index],
-                                      enemy_move[taken_piece_color_index])
+            for i in enemy_move:
+                if i[board_side_index]:
+                    map = chess.Board(i[board_fen_index])
+                    board = set_board_while_game(i[string_board_index], i[board_side_index])
+                else:
+                    set_board_while_game(i[string_board_index], i[board_side_index])
+                if 't' in i[move_type_index]:
+                    if i[transplant_board_side_index] and not i[pocket_side_index]:
+                        my_pocket = chess.variant.CrazyhousePocket(i[pocket_index])
+                        transplant_pieces = set_pocket_while_game(i[pocket_index],
+                                                                  i[transplant_board_side_index],
+                                                                  i[pocket_side_index],
+                                                                  i[taken_piece_color_index])
+                    elif not i[transplant_board_side_index] and not i[pocket_side_index]:
+                        other_pocket = chess.variant.CrazyhousePocket(i[pocket_index])
+                    set_pocket_while_game(i[pocket_index],
+                                          i[transplant_board_side_index],
+                                          i[pocket_side_index],
+                                          i[taken_piece_color_index])
         for event in pygame.event.get():
             if event.type == QUIT:
                 stop = True

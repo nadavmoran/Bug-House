@@ -26,5 +26,16 @@ def get_move(socket):
     except:
         return None
     if move:
-        return json.loads(move)
+        return load_string(move)
     return None
+
+def load_string(data):
+    string = text = ''
+    string = data.decode()
+    string = ''.join(('[', string, ']'))
+    for i in range(len(string) - 2):
+        text += string[i]
+        if string[i] == ']' and string[i + 1] != ',':
+            text +=','
+    text += ']]'
+    return json.loads(text)

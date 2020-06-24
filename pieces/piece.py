@@ -6,6 +6,7 @@ class Piece:
         self.rect.center = self.pos
         self.color = color
 
+
     def set_piece(self, pos, game_display):
         self.pos = pos
         self.rect.center = pos
@@ -14,3 +15,4 @@ class Piece:
     def set_pos(self, pos):
         self.pos = pos
         self.rect.center = pos
+
