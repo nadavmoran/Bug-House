@@ -32,16 +32,14 @@ def is_mate(board, color):
     return False
 
 
-def is_transplant_legal(board, pocket, square, piece, color):
-    if not board.turn == color:
-        return False
+def is_transplant_legal(board, pocket, square, piece,):
     piece = piece_letter_to_piece_type(piece)
     if not board.is_check():
-        board.set_piece_at(square, chess.Piece(piece, color))
+        board.set_piece_at(square, chess.Piece(piece, board.turn))
         pocket.remove(piece)
         board.push(chess.Move.null())
         return True
-    board.set_piece_at(square, chess.Piece(piece, color))
+    board.set_piece_at(square, chess.Piece(piece, board.turn))
     if board.is_check():
         board.remove_piece_at(square)
         return False

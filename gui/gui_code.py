@@ -199,8 +199,8 @@ def set_board_while_game(map, left):
 
 def set_pocket_while_game_tmp(pocket, transplant_pieces, transplant_start_pos, color):
     set_pocket(transplant_start_pos)
-    for i in transplant_pieces:
-        i = None
+    for i in range(len(transplant_pieces)):
+        transplant_pieces[i] = None
     index = 0
     for piece in pocket:
         if color == [255, 255, 255]:

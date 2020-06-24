@@ -17,7 +17,6 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
     prev_pos = [0, 0]
     prev_pos_logic = [0, 0]
     transplant_pos = transplant_start_pos[:]
-    transplant_pos2 = transplant_start_pos2[:]
     prev_color = None
     current_color = None
     tool = None
@@ -187,14 +186,14 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
                 elif transplant_moving:
                     if str(type(transplant_tool)) == "<class 'pieces.chess_pieces.Pawn'>" and (y == 0 or y == 7):
                         break
-                    if x != None and y != None and piece == None:
-                        transplant_color = True if map.turn else False
+                    if x != None and y != None and piece == None and map.turn == (True if color == white else False):
                         legal = is_transplant_legal(map, my_pocket, chess.square(abs(fix_col - x), abs(fix_row - y)), transplant_tool.__str__(),
-                                                    transplant_color)
+                                                    )
                         print(legal)
                         if legal:
                             tmp = str(map) if color == white else str(map)[::-1]
                             board = set_board_while_game(tmp, True)
+                            #transplant_pieces = set_pocket_while_game(str(my_pocket), True, False, transplant_tool.color)
                             stop = send_move(client, [str(map), 't', map.fen(), str(my_pocket), transplant_tool.color])
                             '''current_color = set_color(x, y)
                             draw(prev_pos, white, current_color, x, y)
