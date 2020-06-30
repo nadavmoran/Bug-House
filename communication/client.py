@@ -2,7 +2,14 @@ from constants import *
 import json
 
 
-def connect(socket):#connects to the server
+def connect(socket):
+    '''
+    connects to the server
+    :param socket:
+    a socket object that connects to the server
+    :return:
+    the color the of the player
+    '''
     socket.connect((server_ip, server_port))
     data = str(socket.recv(1024))
     socket.recv(1024)
@@ -11,7 +18,15 @@ def connect(socket):#connects to the server
     return color
 
 
-def send_move(socket, move):#sends a move to the server
+def send_move(socket, move):
+    '''
+    sends a move to the server
+    :param socket:
+    a socket object that connects to the server
+    :param move:
+    data need to be sent
+    :return:
+    '''
     try:
         socket.send(json.dumps(move).encode())
     except:
@@ -20,7 +35,13 @@ def send_move(socket, move):#sends a move to the server
     return False
 
 
-def get_move(socket):#gets a move from the server
+def get_move(socket):
+    '''
+    gets a move from the server
+    :param socket:
+    a socket object
+    :return:
+    '''
     try:
         move = socket.recv(1024)
     except:
@@ -30,7 +51,14 @@ def get_move(socket):#gets a move from the server
     return None
 
 def load_string(data):
-    string = text = ''
+    '''
+    gets a data and decode it
+    :param data:
+    encoded lists of data
+    :return:
+    a list of lists of the data needed
+    '''
+    text = ''
     string = data.decode()
     string = ''.join(('[', string, ']'))
     for i in range(len(string) - 2):

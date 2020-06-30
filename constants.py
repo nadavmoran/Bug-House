@@ -1,4 +1,6 @@
-#The constants variables which we use in the code
+'''
+The constants variables which we use in the code
+'''
 white, black, blue, red = (255, 255, 255), (105, 105, 105), (0, 0, 255), (255, 0, 0)
 square_size = 50
 transplant_square_size = 45

@@ -6,6 +6,22 @@ from pygame.locals import *
 
 
 def main(color, board, transplant_pieces, start_pos, transplant_start_pos, client):
+    '''
+    runs the game
+    :param color:
+     the color the player plays
+    :param board:
+    a reset board
+    :param transplant_pieces:
+    a reset pocket
+    :param start_pos:
+    the position of the board
+    :param transplant_start_pos:
+    the position of the pocket
+    :param client:
+    the server
+    :return:
+    '''
     map = chess.Board()
     my_pocket = chess.variant.CrazyhousePocket()
     other_pocket = chess.variant.CrazyhousePocket()
@@ -17,8 +33,6 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
     prev_pos_logic = [0, 0]
     tool = None
     transplant_tool = None
-    legal = False
-    enemy_move = []
     fix_row, fix_col = 0, 0
     if color == white:
         fix_row = 7
@@ -66,7 +80,6 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
                             legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(fix_col - prev_pos_logic[0]), abs(fix_col - x), 'K')
                         else:
                             legal = is_legal(map, abs(fix_row - prev_pos_logic[1]), abs(fix_row - y), abs(fix_col - prev_pos_logic[0]), abs(fix_col - x), tool.__str__())
-                        print(map)
                         if legal:
                             if piece != None and tool != piece:
                                 tmp = str(map) if color == white else str(map)[::-1]
@@ -89,7 +102,6 @@ def main(color, board, transplant_pieces, start_pos, transplant_start_pos, clien
                         break
                     if x != None and y != None and piece == None and map.turn == (True if color == white else False):
                         legal = is_transplant_legal(map, my_pocket, chess.square(abs(fix_col - x), abs(fix_row - y)), transplant_tool.__str__(),)
-                        print(legal)
                         if legal:
                             tmp = str(map) if color == white else str(map)[::-1]
                             board = set_board_while_game(tmp, True)

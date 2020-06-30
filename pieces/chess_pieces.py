@@ -1,6 +1,8 @@
-#inherits classes of the piece class
 from pieces.piece import Piece
 
+'''
+inherits classes of the piece class
+'''
 
 class Rook(Piece):
     def __init__(self, img, pos, color):

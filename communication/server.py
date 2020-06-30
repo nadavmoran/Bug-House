@@ -1,7 +1,6 @@
 import select
 import socket
 import json
-import chess
 
 
 class Server(object):
@@ -17,7 +16,11 @@ class Server(object):
         self.server.listen(4)
         self.inputs = [self.server]
 
-    def accept_client(self):#accepts a client
+    def accept_client(self):
+        '''
+        accepts a client
+        :return:
+        '''
         connection, address = self.server.accept()
         print(str(address) + ' connected')
         connection.setblocking(0)
@@ -28,12 +31,25 @@ class Server(object):
         self.counter += 1
         self.matched_start()
 
-    def matched_start(self):#starts the game at the same moment for all the players
+    def matched_start(self):
+        '''
+        starts the game at the same moment for all the players
+        :return:
+        '''
         if self.counter == 4:
             for player in self.players:
                 self.send(player, 'game started')
+            print('the game started')
 
-    def publish_move(self, move, client):#publishes a move for all the players
+    def publish_move(self, move, client):
+        '''
+        publishes a move for all the players
+        :param move:
+        list of data need to be published
+        :param client:
+         the client who sent the move variable
+        :return:
+        '''
         client_num = self.players[client]
         for i in self.players:
             message = move.copy()
@@ -47,7 +63,15 @@ class Server(object):
             self.send(i, json.dumps(message))
 
 
-    def publish(self, transplant, client):#publishes a capture and a transplant
+    def publish(self, transplant, client):
+        '''
+        publishes a capture and a transplant
+        :param transplant:
+        list of data need to be sent
+        :param client:
+        the client that sent the message
+        :return:
+        '''
         client_num = self.players[client]
         for i in self.players:
             message = transplant.copy()
@@ -66,19 +90,30 @@ class Server(object):
                 message.append(False)
             if (player_num % 2 == 1 and message[-1]) or (player_num % 2 == 0 and not message[-1]):
                 message[0] = message[0][::-1]
-            print(client_num, player_num)
-            print(message[-2], message[-1])
             self.send(i, json.dumps(message))
 
 
-    def send(self, client, data):#sends data to the server
+    def send(self, client, data):
+        '''
+        sends data to the server
+        if can't send, close the client
+        :param client:
+        the client that gets the message
+        :param data:
+        the message needs to be sent to the client
+        :return:
+        '''
         try:
             client.send(data.encode())
         except:
             client.close()
 
 
-    def readable_loop(self):#runs on the readable list
+    def readable_loop(self):
+        '''
+        Runs on the readable list
+        :return:
+        '''
         for client in self.readable:
             if client is self.server:
                 self.accept_client()
@@ -91,21 +126,25 @@ class Server(object):
                     client.close()
                 if data:
                     data = json.loads(data)
-                    print(data[0])
+
                     if data[1] == 'm':
                         self.publish_move(data, client)
                     else:
                         self.publish(data, client)
 
 
-    def listen(self):#The main loop
+    def listen(self):
+        '''
+        The main loop
+        :return:
+        '''
         while self.inputs:
             self.readable, _, exceptional = select.select(self.inputs, [], self.inputs)
             self.readable_loop()
             for client in exceptional:
                 self.inputs.remove(client)
                 client.close()
-                print(client + " disconnected")
+
 
 
 s = Server(4320)

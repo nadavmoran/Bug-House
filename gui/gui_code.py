@@ -1,11 +1,15 @@
-#manage the gui
 import pygame
-from pygame.locals import *
 from pieces.chess_pieces import *
 from constants import *
 
 
-def set_board(start_pos):#draws a 8X8 chess board
+def set_board(start_pos):
+    '''
+    draws a 8X8 chess board
+    :param start_pos:
+    the position of the board
+    :return:
+    '''
     size = square_size
     boardLength = 8
     cnt = 0
@@ -25,12 +29,26 @@ def set_board(start_pos):#draws a 8X8 chess board
             board[y].append(None)
     return board
 
-def set_pocket(start_pos):#fills a pocket in white
+def set_pocket(start_pos):
+    '''
+    fills a pocket in white
+    :param start_pos:
+    the position of the board
+    :return:
+    '''
     for i in range(15):
         pygame.draw.rect(game_display, white, [start_pos[0] + i * transplant_square_size - corner_center_distance, start_pos[1] - corner_center_distance, square_size, square_size])
 
 
-def set_two_boards(start_pos, start_pos2):#sets two list of lists - two boards
+def set_two_boards(start_pos, start_pos2):
+    '''
+    sets two list of lists - two boards
+    :param start_pos:
+    the position of the left board
+    :param start_pos2:
+    the position of the right board
+    :return:
+    '''
     board = set_board(start_pos)
     board2 = set_board(start_pos2)
     transplant_pieces = []
@@ -49,7 +67,15 @@ def set_two_boards(start_pos, start_pos2):#sets two list of lists - two boards
     return board, transplant_pieces, board2, transplant_pieces2, transplant_pieces3, transplant_pieces4
 
 
-def set_tools_in_board(board, start_pos):#sets pieces in a board
+def set_tools_in_board(board, start_pos):
+    '''
+    sets pieces in a board
+    :param board:
+    the board
+    :param start_pos:
+    the position of the board
+    :return:
+    '''
     pos = start_pos[:]
     for i in board:
         pos[0] = start_pos[0]
@@ -60,7 +86,17 @@ def set_tools_in_board(board, start_pos):#sets pieces in a board
         pos[1] += square_size
 
 
-def set_all_tools(board, start_pos, is_left_board):#sets all the pieces in the two boards
+def set_all_tools(board, start_pos, is_left_board):
+    '''
+    sets all the pieces in the two boards
+    :param board:
+    the board
+    :param start_pos:
+    the position of the board
+    :param is_left_board:
+    the location of the board
+    :return:
+    '''
     images = []
     if is_left_board:
         names = ['rook', 'knight', 'bishop', 'queen', 'king', 'pawn']
@@ -112,7 +148,13 @@ def set_all_tools(board, start_pos, is_left_board):#sets all the pieces in the t
     return board
 
 
-def get_square_under_mouse(board, start_pos):#returns the position of a click on the board and what there is there
+def get_square_under_mouse(board, start_pos):
+    '''
+    returns the position of a click on the board and what there is there
+    :param board:
+    :param start_pos:
+    :return:
+    '''
     mouse_pos = pygame.Vector2(pygame.mouse.get_pos()) - (
         start_pos[0] - corner_center_distance, start_pos[1] - corner_center_distance)
     x, y = [(int(i // square_size)) for i in mouse_pos]
@@ -122,7 +164,14 @@ def get_square_under_mouse(board, start_pos):#returns the position of a click on
     return None, None, None
 
 
-def get_transplant_piece_under_mouse(transplant_pieces, transplant_start_pos):#returns the position of a click on the pocket and what there is there
+def get_transplant_piece_under_mouse(transplant_pieces, transplant_start_pos):
+    '''
+    returns the position of a click on the pocket and what there is there
+    :param transplant_pieces:
+    :param transplant_start_pos:
+    the position of the pocket
+    :return:
+    '''
     mouse_pos = pygame.Vector2(pygame.mouse.get_pos()) - (
         transplant_start_pos[0] - corner_center_distance, transplant_start_pos[1] - corner_center_distance)
     x, y = [(int(i // transplant_square_size)) for i in mouse_pos]
@@ -152,7 +201,15 @@ def set_board_while_game_tmp(board, map, start_pos):
         col += 1
 
 
-def set_board_while_game(map, left):#draws a board from a string of a Board Object
+def set_board_while_game(map, left):
+    '''
+    draws a board
+    :param map:
+    string of a Board object
+    :param left:
+    the location of the board
+    :return:
+    '''
     if left:
         board = set_board((start_pos[0] - corner_center_distance,
                            start_pos[1] - corner_center_distance))
@@ -182,8 +239,18 @@ def set_pocket_while_game_tmp(pocket, transplant_pieces, transplant_start_pos, c
         index +=1
 
 
-def set_pocket_while_game(pocket, left, up, color):#draws a pocket from a string of a Pocket Object
-    print(pocket, left, up, color)
+def set_pocket_while_game(pocket, left, up, color):
+    '''
+    draws a pocket from a string of a Pocket Object
+    :param pocket:
+    :param left:
+    represents the pocket's board
+    :param up:
+    represents the location of the pocket
+    :param color:
+    the color the pieces color
+    :return:
+    '''
     if left and up:
         set_pocket_while_game_tmp(pocket, transplant_pieces, transplant_start_pos, color)
         return transplant_pieces

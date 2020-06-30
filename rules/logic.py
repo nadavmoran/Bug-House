@@ -1,8 +1,26 @@
 import chess
 import chess.variant
 
-def is_legal(board, row1, row2, col1, col2, piece='P', promotion=None):#checks if a move is legal
-    print('the turn is '+str(board.turn))
+def is_legal(board, row1, row2, col1, col2, piece='P', promotion=None):
+    '''
+    checks if a move is legal, if yes the function applies it
+    :param board:
+    the board that the move occurred in
+    :param row1:
+    the starting row of the piece
+    :param row2:
+    the ending row of the piece
+    :param col1:
+    the starting column of the piece
+    :param col2:
+    the ending column of the piece
+    :param piece:
+    the piece moved
+    :param promotion:
+    if there is a promotion, gets the piece the pawn promoted to
+    :return:
+    if the move is legal returns true, else false
+    '''
     try:
         if promotion is not None:
             move = chr(col1 + 97) + str(row1 + 1) + chr(col2 + 97) + str(row2 + 1) + '=' + promotion
@@ -19,7 +37,16 @@ def is_legal(board, row1, row2, col1, col2, piece='P', promotion=None):#checks i
         return False
 
 
-def is_mate(board, color):#checks if there is a checkmate
+def is_mate(board, color):
+    '''
+    checks if there is a checkmate
+    :param board:
+    a Board object
+    :param color:
+    the color of the king attacked
+    :return:
+    true if there is a checkmate, else false
+    '''
     if not board.is_checkmate():
         return False
     squares = board.checkers()
@@ -32,7 +59,20 @@ def is_mate(board, color):#checks if there is a checkmate
     return False
 
 
-def is_transplant_legal(board, pocket, square, piece,):#checks if a transplant is legal
+def is_transplant_legal(board, pocket, square, piece,):
+    '''
+    checks if a transplant is legal, if yes it applies it
+    :param board:
+    a chess.Board object
+    :param pocket:
+    a chess.Pocket object
+    :param square:
+    the square the player chose
+    :param piece:
+    the piece transplanted
+    :return:
+    true if the transplant legal, else false
+    '''
     piece = piece_letter_to_piece_type(piece)
     if not board.is_check():
         board.set_piece_at(square, chess.Piece(piece, board.turn))
@@ -47,7 +87,14 @@ def is_transplant_legal(board, pocket, square, piece,):#checks if a transplant i
     board.push(chess.Move.null())
     return True
 
-def piece_letter_to_piece_type(piece):#convert from piece letter to piece type
+def piece_letter_to_piece_type(piece):
+    '''
+    convert from piece letter to piece type
+    :param piece:
+    the piece letter
+    :return:
+    the piece number
+    '''
     if piece == 'P':
         return 1
     elif piece == 'N':
